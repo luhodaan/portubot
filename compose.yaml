@@ -1,0 +1,14 @@
+services:
+  app:
+    build: .
+    container_name: portubot
+    stdin_open: true
+    tty: true
+
+    environment:
+      - PYTHONUNBUFFERED=1
+    env_file:
+      - .env
+
+
+ 
