@@ -19,7 +19,19 @@ A command-line chatbot designed to help users learn European Portuguese through 
 
 ## Installation 📥
 
-1. Clone the repository:
+1. **Clone the repository**:
    ```sh
    git clone https://github.com/luhodaan/portubot.git
    cd portubot
+
+## Quick Start 🚀
+
+1. **Build the image:**
+```sh
+docker compose build
+```
+
+2. **Launch the CLI app:**
+```sh
+docker compose run --rm app
+```
