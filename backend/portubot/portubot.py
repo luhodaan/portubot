@@ -6,20 +6,35 @@ from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import START, MessagesState, StateGraph
 from langchain_core.messages import HumanMessage
 from langchain.chat_models import init_chat_model
-# Optional: print the current working directory to make sure you're in the right place
-print("Working directory:", os.getcwd())
-#env_path = Path.cwd() / "src\\notebook\\.env"
-#load_dotenv(dotenv_path=env_path)
-# Load .env file from current directory or specify path if needed
-#print(env_path)
+
+
+# print("Working directory:", os.getcwd())
 load_dotenv()
 # Test if it worked
 print("LangSmith API Key:", os.getenv("LANGSMITH_PROJECT"))  # should print the value or None
 
+class PortugueseTutor:
+    def __init__(self):
+        load_dotenv()
+        self.model = init_chat_model("gpt-4o-mini",model_provider="openai",temperature=1)       
+        self.memory = MemorySaver()
+        self.workflow = self._build_workflow()
+        self.configuration = {"configurable": {"thread_id": "1"}}
+        self.prompt_template = self._create_prompt()
 
-model = init_chat_model("gpt-4o-mini", model_provider = "openai", temperature = 1)
+    def _build_workflow(self):
+        workflow = StateGraph(state_schema = MessagesState)
+        workflow.add_node("model", self.call_model)
+        workflow.add_edge(START, "model")         
+        return workflow.compile(checkpointer=self.memory)
 
-prompt_template = ChatPromptTemplate.from_messages(
+    def call_model(self,state: MessagesState):
+        prompt = self.prompt_template.invoke(state)
+        response = self.model.invoke(prompt)
+        return {"messages": response}
+    
+    def _create_prompt(self):
+        return ChatPromptTemplate.from_messages(
     [
         (
             "system",
@@ -35,42 +50,25 @@ prompt_template = ChatPromptTemplate.from_messages(
         ),
         MessagesPlaceholder(variable_name="messages"),
     ]
-)
+    )
+    
+    async def get_response(self, user_input: str):
+        app = self.workflow
+        events = app.stream(
+            {"messages":
+            [HumanMessage(content=user_input)]},
+            config=self.configuration
+        )
 
-# Define a new graph
-workflow = StateGraph(state_schema=MessagesState)
+        full_response = []
+        for event in events:
+            for value in event.values():
+                full_response.append(value["messages"].content)
+            
+        return "\n".join(full_response)
 
 
-def call_model(state: MessagesState):
-    prompt = prompt_template.invoke(state)
-    response = model.invoke(prompt)
-    return {"messages": response}
 
 
-workflow.add_edge(START, "model")
-workflow.add_node("model", call_model)
 
-memory = MemorySaver()
-app = workflow.compile(checkpointer=memory)
-configuration ={"configurable": {"thread_id": "1"}}
 
-def stream_app_updates(user_input: str):
-    for event in app.stream({"messages": [HumanMessage(content=user_input)]},config = configuration):
-        print("João: ")
-        for value in event.values():
-            # If value is a BaseMessage (like AIMessage or HumanMessage), just print it
-            print(value["messages"].content)
-
-while True:
-    try:
-        user_input = input("Usuário: ")
-        if user_input.lower() in ["quit", "exit", "q"]:
-            print("Goodbye!")
-            break
-        stream_app_updates(user_input)
-    except KeyboardInterrupt:
-        print("\nGoodbye!")
-        break
-    except Exception as e:
-        print(f"Error: {e}")
-        break

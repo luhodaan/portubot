@@ -12,7 +12,7 @@ A command-line chatbot designed to help users learn European Portuguese through 
 
 ## Prerequisites 🛠️
 
-- Python 3.8+
+- Python 3.13+
 - [Poetry](https://python-poetry.org/) (recommended) or pip
 - OpenAI API key (or other supported LLM provider)
 - LangSmith API key (optional for tracing)

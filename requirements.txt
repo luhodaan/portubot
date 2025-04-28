@@ -62,3 +62,5 @@ urllib3==2.4.0 ; python_version >= "3.13" and python_version < "4.0"
 uvicorn==0.34.2 ; python_version >= "3.13" and python_version < "4.0"
 xxhash==3.5.0 ; python_version >= "3.13" and python_version < "4.0"
 zstandard==0.23.0 ; python_version >= "3.13" and python_version < "4.0"
+
+reflex==0.7.8

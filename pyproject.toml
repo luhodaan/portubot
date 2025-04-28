@@ -13,14 +13,20 @@ dependencies = [
     "langchain-openai (>=0.3.14,<0.4.0)",
     "python-dotenv (>=1.1.0,<2.0.0)",
     "langchain-cli (>=0.0.36,<0.0.37)",
-    "langgraph (>=0.3.33,<0.4.0)"
+    "langgraph (>=0.3.33,<0.4.0)",
+    "reflex (>=0.7.8,<0.8.0)"
 ]
 
 [tool.poetry]
-packages = [{include = "portubot", from = "src"}]
-package-mode = false
+packages = [
+    { include = "backend" },
+    { include = "portubot", from = "frontend/portubot" }
+]
 
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.plugins."reflex.app"]
+portubot = "portubot.portubot"
