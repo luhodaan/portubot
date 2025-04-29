@@ -1,10 +1,13 @@
 services:
-  app:
+  porto:
     build: .
-    container_name: portubot
+    container_name: portubotreflex
     stdin_open: true
     tty: true
-
+    restart: unless-stopped
+    ports:
+      - "3000:3000"  
+      - "8000:8000"
     environment:
       - PYTHONUNBUFFERED=1
     env_file:
