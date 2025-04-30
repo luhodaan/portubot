@@ -1,26 +1,22 @@
-[project]
+[tool.poetry]
 name = "portubot"
 version = "0.1.0"
 description = ""
-authors = [
-    {name = "Your Name",email = "you@example.com"}
-]
+authors = ["luhodaan <luca.pasquarelli.villa@gmail.com>"]
 readme = "README.md"
-requires-python = ">=3.13,<4.0"
 
-dependencies = [
-    "langchain (>=0.3.24,<0.4.0)",
-    "langchain-openai (>=0.3.14,<0.4.0)",
-    "python-dotenv (>=1.1.0,<2.0.0)",
-    "langchain-cli (>=0.0.36,<0.0.37)",
-    "langgraph (>=0.3.33,<0.4.0)"
-]
-
-[tool.poetry]
-packages = [{include = "portubot", from = "src"}]
-package-mode = false
+[tool.poetry.dependencies]
+python = "3.11"
+langchain = "^0.3.24"
+langchain-openai = "^0.3.14"
+python-dotenv = "^1.1.0"
+langchain-cli = "^0.0.36"
+langgraph = "^0.4.0"
+dash = "^3.0.4"
+pandas = "^2.2.3"
+dash-chat = "^0.2.0"
 
 
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
+requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
